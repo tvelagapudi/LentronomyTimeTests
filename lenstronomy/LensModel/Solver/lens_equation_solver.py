@@ -133,7 +133,7 @@ class LensEquationSolver(object):
         itertime_end = dt.datetime.now()
         delta_time = itertime_end-itertime_start
         delta_time = delta_time.seconds + round((delta_time.microseconds / (10**6)), 6)
-        print("Find_iterative" + delta_time)
+        print("Find_iterative" + str(delta_time))
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
@@ -149,7 +149,7 @@ class LensEquationSolver(object):
         ips_end = dt.datetime.now()
         delta_time = ips_end-ips_start
         delta_time = delta_time.seconds + round((delta_time.microseconds / (10**6)), 6)
-        print("Find_iterative" + delta_time)
+        print("Find_iterative" + str(delta_time))
         return x_mins, y_mins
 
     def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),
