@@ -93,6 +93,7 @@ class LensEquationSolver(object):
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
+        # this is a comment to see how github commits work
         kwargs_lens = self.lensModel.set_static(kwargs_lens)
         # compute number of pixels to cover the search window with the required min_distance
         numPix = int(round(search_window / min_distance) + 0.5)
