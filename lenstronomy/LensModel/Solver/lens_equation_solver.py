@@ -1,6 +1,7 @@
 import numpy as np
 import lenstronomy.Util.util as util
 import lenstronomy.Util.image_util as image_util
+import datetime as dt
 from scipy.optimize import minimize
 
 
@@ -93,6 +94,7 @@ class LensEquationSolver(object):
         :returns: (exact) angular position of (multiple) images ra_pos, dec_pos in units of angle
         :raises: AttributeError, KeyError
         """
+        ips_start = dt.datetime.now()
         # this is a comment to see how github commits work
         kwargs_lens = self.lensModel.set_static(kwargs_lens)
         # compute number of pixels to cover the search window with the required min_distance
@@ -124,9 +126,14 @@ class LensEquationSolver(object):
         y_mins = np.append(y_mins, np.random.uniform(low=-search_window / 2 + y_center, high=search_window / 2 + y_center,
                                              size=num_random))
         # iterative solving of the lens equation for the selected grid points
+        itertime_start = dt.datetime.now()
         x_mins, y_mins, solver_precision = self._findIterative(x_mins, y_mins, sourcePos_x, sourcePos_y, kwargs_lens,
                                                                precision_limit, num_iter_max, verbose=verbose,
                                                                min_distance=min_distance, non_linear=non_linear)
+        itertime_end = dt.datetime.now()
+        delta_time = itertime_end-itertime_start
+        delta_time = delta_time.seconds + round((delta_time.microseconds / (10**6)), 6)
+        print("Find_iterative" + delta_time)
         # only select iterative results that match the precision limit
         x_mins = x_mins[solver_precision <= precision_limit]
         y_mins = y_mins[solver_precision <= precision_limit]
@@ -139,6 +146,10 @@ class LensEquationSolver(object):
             x_mins = x_mins[mag >= magnification_limit]
             y_mins = y_mins[mag >= magnification_limit]
         self.lensModel.set_dynamic()
+        ips_end = dt.datetime.now()
+        delta_time = ips_end-ips_start
+        delta_time = delta_time.seconds + round((delta_time.microseconds / (10**6)), 6)
+        print("Find_iterative" + delta_time)
         return x_mins, y_mins
 
     def _findIterative(self, x_min, y_min, sourcePos_x, sourcePos_y, kwargs_lens, precision_limit=10 ** (-10),
